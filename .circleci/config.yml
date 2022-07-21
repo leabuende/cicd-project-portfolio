@@ -21,8 +21,8 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: yarn install
-      - run: yarn run build
+      - run: npm install
+      - run: npm run build
 
       - save_cache:
           paths:
@@ -32,9 +32,6 @@ jobs:
             - firebase.json
             - .firebaserc
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }} 
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
   deploy-job:
         docker:
           - image: cimg/base:stable
