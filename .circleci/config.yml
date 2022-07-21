@@ -38,6 +38,7 @@ jobs:
         docker:
           - image: cimg/base:stable
         steps:
+          - node/install
           - restore_cache:
               keys:
                 - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }} 
