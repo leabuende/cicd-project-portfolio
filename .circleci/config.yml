@@ -35,6 +35,27 @@ jobs:
             - firebase.json
             - .firebaserc
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }} 
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
   deploy-job:
         docker:
           - image: cimg/base:stable
@@ -66,6 +87,8 @@ jobs:
 workflows:
   -deploy:
     jobs:
+      - notify:
+          context: slack-secrets
       - build-job
       - deploy-job:
           requires:
