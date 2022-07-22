@@ -25,7 +25,7 @@ jobs:
 
       - run: npm install
       - run: npm run build
-
+      - run: npm run unit
       - save_cache:
           paths:
             - node_modules
