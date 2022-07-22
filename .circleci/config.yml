@@ -55,7 +55,6 @@ jobs:
               name: Deploy Master to Firebase
               command: npm run firebase-deploy -- --token=$FIREBASE_DEPLOY_TOKEN  
 # Invoke jobs via workflows
-#Test CircleCI bot
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   -deploy:
