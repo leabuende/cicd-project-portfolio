@@ -70,6 +70,7 @@ jobs:
           - notify_slack_pass
 
 # Invoke jobs via workflows
+#Test slack
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   -deploy:
