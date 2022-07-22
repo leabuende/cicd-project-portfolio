@@ -6,6 +6,17 @@ orbs:
   slack: circleci/slack@4.10.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+commands:
+  notify_slack_error:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+  notify_slack_pass:
+    steps:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
 jobs:
   build-job:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
@@ -35,27 +46,6 @@ jobs:
             - firebase.json
             - .firebaserc
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }} 
-  notify:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
   deploy-job:
         docker:
           - image: cimg/base:stable
@@ -76,19 +66,14 @@ jobs:
           - run:
               name: Deploy Master to Firebase
               command: npm run firebase-deploy -- --token=$FIREBASE_DEPLOY_TOKEN 
-          - slack/notify:
-              event: fail
-              template: basic_fail_1
-          - slack/notify:
-              event: pass
-              template: success_tagged_deploy_1 
+          - notify_slack_error
+          - notify_slack_pass
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   -deploy:
     jobs:
-      - notify:
-          context: slack-secrets
       - build-job
       - deploy-job:
           requires:
